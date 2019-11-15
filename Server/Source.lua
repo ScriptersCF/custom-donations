@@ -44,3 +44,4 @@ paid.OnServerEvent:Connect(function(Player, Username, Discriminator)
 		end
 	--end
 end)
+-- idfk
