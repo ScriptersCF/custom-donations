@@ -99,3 +99,5 @@ paid.OnClientEvent:Connect(function()
 	Discord.Visible = true
 	script.Parent.Visible = false
 end)
+
+-- josh is dumb
