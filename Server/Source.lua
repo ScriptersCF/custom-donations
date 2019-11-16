@@ -1,7 +1,7 @@
-local paid = game.ReplicatedStorage:WaitForChild("paid")
+local Paid = game.ReplicatedStorage:WaitForChild("Event")
 local HttpService = game:GetService("HttpService")
 local DataStoreService = game:GetService("DataStoreService")
-local URL = "https://discordapp.com/api/webhooks/xxxxxxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+local URL = "https://discordapp.com/api/webhooks/xxxxxxxxxxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 local Spent = 0
 
 game:GetService("MarketplaceService").ProcessReceipt = function(ReceiptInfo)
@@ -26,7 +26,7 @@ local function GetAmount(Player, Amount)
 	return Total
 end
 
-paid.OnServerEvent:Connect(function(Player, Username, Discriminator)
+Paid.OnServerEvent:Connect(function(Player, Username, Discriminator)
 	--if Spent >= 100 then
 		if Username then
 			Player:LoadCharacter()
@@ -40,7 +40,7 @@ paid.OnServerEvent:Connect(function(Player, Username, Discriminator)
 				HttpService:PostAsync(URL, HttpService:JSONEncode(Data))
 			end
 		else
-			paid:FireAllClients()
+			Paid:FireAllClients()
 		end
 	--end
 end)
