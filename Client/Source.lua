@@ -75,11 +75,11 @@ Donate.Submit.MouseButton1Click:Connect(function()
 	Event:FireServer()
 end)
 
-MarketplaceService.PromptProductPurchaseFinished:Connect(function(Player, Id, isPurchased)
+MarketplaceService.PromptProductPurchaseFinished:Connect(function(Player, Id, IsPurchased)
 	Donate.Input.Text = ""
-	if isPurchased then
+	if IsPurchased then
 		Purchased, PromptFinished, PreviousPurchase = true, true, true
-	elseif PreviousPurchase and not isPurchased then
+	elseif PreviousPurchase and not IsPurchased then
 		Purchased, PromptFinished, PreviousPurchase = false, true, false
 		Event:FireServer()
 	else
