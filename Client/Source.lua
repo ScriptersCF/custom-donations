@@ -4,8 +4,9 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Event = game:GetService("ReplicatedStorage"):WaitForChild("Event") -- Remote event
 
 -- References
-local Discord = script.Parent.Discord
+local Discord = script.Parent.Parent.Discord
 local Donate = script.Parent.Donate
+local Input = script.Parent.Input
 
 -- Settings 
 local PromptFinished, Purchased, PreviousPurchase = false, false, false
@@ -37,26 +38,25 @@ local Products = {
 }
 
 -- Donate stuff --
-Donate.Input:GetPropertyChangedSignal("Text"):Connect(function()
-	local IsNumber = tonumber(Donate.Input.Text) ~= nil
-	local Input, BorderColor = Donate.Input.Text, Donate.Input.BorderColor3
+Input:GetPropertyChangedSignal("Text"):Connect(function()
+	local IsNumber = tonumber(Input.Text) ~= nil
+	local Input, BorderColor = Input.Text, Input.BorderColor3
 	if #Input > 7 then
-		Donate.Input.Text = Input:sub(1, 7)
+		Input.Text = Input:sub(1, 7)
 	elseif IsNumber and #Input <= 7 and tonumber(Input) > 0 and tonumber(Input) <= MaxDonationAmount and math.floor(Input) == tonumber(Input) then
 		BorderColor = SuccessColor
-		Donate.Submit.Visible = true
+		Donate.Visible = true
 		DonationAmount = tonumber(Input)
 		Ids = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	else
 		BorderColor = FailColor
-		Donate.Submit.Visible = false
+		Donate.Visible = false
 	end
 end)
 
-Donate.Submit.MouseButton1Click:Connect(function()
-	local Input = Donate.Input.Text
-	if not tonumber(Input) or tonumber(Input) > MaxDonationAmount then return end
-	Donate.Submit.Visible = false
+Donate.MouseButton1Click:Connect(function()
+	if not tonumber(Input.Text) or tonumber(Input.Text) > MaxDonationAmount then return end
+	Donate.Visible = false
 	for index, value in pairs(Cost) do
 		while DonationAmount >= tonumber(value) do
 			Ids[index] = Ids[index] + 1
@@ -76,7 +76,7 @@ Donate.Submit.MouseButton1Click:Connect(function()
 end)
 
 MarketplaceService.PromptProductPurchaseFinished:Connect(function(Player, Id, IsPurchased)
-	Donate.Input.Text = ""
+	Input.Text = ""
 	if IsPurchased then
 		Purchased, PromptFinished, PreviousPurchase = true, true, true
 	elseif PreviousPurchase and not IsPurchased then
