@@ -7,6 +7,8 @@ local Event = game:GetService("ReplicatedStorage"):WaitForChild("Event") -- Remo
 local Discord = script.Parent.Parent.Discord
 local Donate = script.Parent.Donate
 local Input = script.Parent.Input
+local ThankYou = script.Parent.Parent.ThankYou
+local Main = script.Parent.Parent.Main
 
 -- Settings 
 local PromptFinished, Purchased, PreviousPurchase = false, false, false
@@ -40,16 +42,16 @@ local Products = {
 -- Donate stuff --
 Input:GetPropertyChangedSignal("Text"):Connect(function()
 	local IsNumber = tonumber(Input.Text) ~= nil
-	local Input, BorderColor = Input.Text, Input.BorderColor3
-	if #Input > 7 then
-		Input.Text = Input:sub(1, 7)
-	elseif IsNumber and #Input <= 7 and tonumber(Input) > 0 and tonumber(Input) <= MaxDonationAmount and math.floor(Input) == tonumber(Input) then
-		BorderColor = SuccessColor
+	
+	if #Input.Text > 7 then
+		Input.Text = Input.Text:sub(1, 7)
+	elseif IsNumber and #Input.Text <= 7 and tonumber(Input.Text) > 0 and tonumber(Input.Text) <= MaxDonationAmount and math.floor(Input.Text) == tonumber(Input.Text) then
+		Input.BorderColor3 = SuccessColor
 		Donate.Visible = true
-		DonationAmount = tonumber(Input)
+		DonationAmount = tonumber(Input.Text)
 		Ids = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	else
-		BorderColor = FailColor
+		Input.BorderColor3 = FailColor
 		Donate.Visible = false
 	end
 end)
@@ -89,32 +91,40 @@ end)
 
 -- Discord stuff --
 Discord.Username:GetPropertyChangedSignal("Text"):Connect(function()
-	local User, BorderColor = Discord.Username.Text, Discord.Username.BorderColor3
+	local User = Discord.Username.Text
 	if #User > 32 then
 		Discord.Username.Text = User:sub(1, 32)
 	elseif #User > 2 and #User <= 32 then 
-		BorderColor = SuccessColor
+		Discord.Submit.Visible = true--Discord.Discriminator.BorderColor3 == SuccessColor
+		Discord.Username.BorderColor3 = SuccessColor
 	else
-		BorderColor = FailColor
+		Discord.Submit.Visible = false
+		Discord.Username.BorderColor3 = FailColor
 	end
 end)
 
 Discord.Discriminator:GetPropertyChangedSignal("Text"):Connect(function()
-	local Discrim, BorderColor = Discord.Discriminator.Text, Discord.Discriminator.BorderColor3
+	local Discrim = Discord.Discriminator.Text
 	if #Discrim > 4 then
 		Discord.Discriminator.Text = Discrim:sub(1, 4)
 	elseif #Discrim == 4 and tonumber(Discrim) then
-		BorderColor = SuccessColor
+		Discord.Submit.Visible = Discord.Username.BorderColor3 == SuccessColor
+		Discord.Discriminator.BorderColor3 = SuccessColor
 	else 
-		BorderColor = FailColor
+		Discord.Submit.Visible = false
+		Discord.Discriminator.BorderColor3 = FailColor
 	end
 end)
 
 Discord.Submit.MouseButton1Click:Connect(function()
-	Event:FireServer(Discord.Username.Text, Discord.Discriminator.Text)
-	Discord.Visible, Donate.Visible = false, true
+	Event:FireServer(Discord.Username.Text:lower(), "0")
+	--Discord.Visible, Donate.Visible = false, true
+	Discord.Visible = false
+	ThankYou.Visible = true
 end)
 
 Event.OnClientEvent:Connect(function()
-	Discord.Visible, Donate.Visible = true, false
+	Discord.Visible = true
+	Main.Visible = false
+	Donate.Visible = false
 end)
